@@ -13,12 +13,16 @@ class CartManager {
 	async addCart() {
         this.carts = await this.getCarts()
 
-		await this.saveCart({id: nanoid(), products: []}, ...this.carts)
+		const cartSaved = await this.saveCart({id: nanoid(), products: []}, ...this.carts)
+
+		return cartSaved
 	}
     
 	async saveCart(cartToSave) {
         this.carts.push(cartToSave)
 		await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, '\t'))
+
+		return cartToSave
 	}
     
     async getCarts() {
@@ -61,7 +65,9 @@ class CartManager {
 
 	async updateCart(cart) {
 		await this.deleteCart(cart.id)
-		await this.saveCart(cart)
+		const updatedCart = await this.saveCart(cart)
+
+		return updatedCart
 	}
 
 	async deleteCart(id) {

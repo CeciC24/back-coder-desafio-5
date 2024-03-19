@@ -19,7 +19,9 @@ class ProductManager {
 			}
 		}
 
-		await this.saveProduct({ id: nanoid(), status: true, ...productToAdd })
+		const productSaved = await this.saveProduct({ id: nanoid(), status: true, ...productToAdd }) 
+
+		return productSaved
 	}
 
 	async isValidProduct(product) {
@@ -41,6 +43,8 @@ class ProductManager {
 	async saveProduct(productToSave) {
 		this.products.push(productToSave)
 		await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, '\t'))
+
+		return productToSave
 	}
 
 	async getProducts() {
@@ -62,16 +66,6 @@ class ProductManager {
 		}
 	}
 
-	async getProductByCode(code) {
-		const search = this.products.find((product) => product.code === code)
-
-		if (search) {
-			return search
-		} else {
-			throw new Error(`⚠️  Code: ${code} Not found`)
-		}
-	}
-
 	async updateProduct(id, field) {
 		let oldProduct = await this.getProductById(id)
 
@@ -79,7 +73,9 @@ class ProductManager {
 
 		let newProduct = { ...oldProduct, ...field }
 
-		await this.saveProduct(newProduct)
+		const updatedProduct = await this.saveProduct(newProduct)
+
+		return updatedProduct
 	}
 
 	async deleteProduct(id) {

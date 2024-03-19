@@ -38,8 +38,7 @@ io.on('connection', (socket) => {
 
 	socket.on('addProduct', async (product) => {
 		try {
-			await ProductMngr.addProduct(product)
-			const productAdded = await ProductMngr.getProductByCode(product.code)
+			const productAdded = await ProductMngr.addProduct(product)
 			io.emit('addToTheList', productAdded)
 
 		} catch (error) {
